@@ -27,5 +27,16 @@ public class Assembler {
         }
     }
 
+    public String convertToOctal(int decimal) {
+        //converts a decimal number to octal - base 8
+        String octalNum = Integer.toOctalString(decimal);
+        int octalLength = octalNum.length();
+        if (octalLength == 6){
+            return octalNum;
+        }else{
+            return "0".repeat(6-octalLength) + octalNum;
+        }
+    }
+
 
 }
