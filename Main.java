@@ -5,8 +5,13 @@ public class Main {
 
 	public static void main(String[] args){
 
-		String sourceFile = "SourceFiles/sourceFile1.txt";
-		Assembler assemble = new Assembler(sourceFile);
+		String filename = "File1";
+		String sourceFileDestination = "SourceFiles/source" + filename + ".txt";
+		String loadFileDestination = "OutputFiles/load" + filename + ".txt";
+		String listFileDestination = "OutputFiles/list" + filename + ".txt";
+
+		Assembler assemble = new Assembler(sourceFileDestination, loadFileDestination, listFileDestination);
 		assemble.first_pass();
+		assemble.second_pass();
 	}
 }
