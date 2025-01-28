@@ -11,7 +11,7 @@ public class Main {
 		String listFileDestination = "OutputFiles/list" + filename + ".txt";
 
 		Assembler assemble = new Assembler(sourceFileDestination, loadFileDestination, listFileDestination);
-		assemble.first_pass();
-		assemble.second_pass();
+		assemble.firstPass();
+		assemble.secondPass();
 	}
 }

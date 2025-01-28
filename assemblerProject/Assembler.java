@@ -28,7 +28,7 @@ public class Assembler {
         this.opCodes.put("LDR", "000001");
     }
 
-    public void read_file(String filename) {
+    public void readFile(String filename) {
         //helper function for printing files
         try (Scanner scanner = new Scanner(new File(filename))) {
             while (scanner.hasNextLine()) {
@@ -42,7 +42,7 @@ public class Assembler {
         }
     }
 
-    public void first_pass(){
+    public void firstPass(){
         //goes through the assembler first pass and assigns labels their values
         int address = 0;
         Scanner scanner = null;
@@ -78,7 +78,7 @@ public class Assembler {
         //System.out.println("Ending Address: " + address);
     }
 
-    public void second_pass(){
+    public void secondPass(){
         //goes through the second assembler pass and writes out load and listing files
         int address = 0;
         Scanner scanner = null;
