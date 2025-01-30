@@ -24,14 +24,9 @@ public class Assembler {
         this.opCodes = new HashMap<>();
         this.initializeOpcodes();
     }
-
+//Initializong the binary value with corresponding labels
     private void initializeOpcodes(){
         this.opCodes.put("LDR", "000001");
-        this.opCodes.put("STR", "000010");
-        this.opCodes.put("LDA", "000011");
-        this.opCodes.put("LDX", "100001");
-        this.opCodes.put("STX", "100010");
-        this.opCodes.put("JZ", "001000");
     }
 
     public void readFile(String filename) {
