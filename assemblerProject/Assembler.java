@@ -31,6 +31,7 @@ public class Assembler {
         this.opCodes.put("LDA", "000011");
         this.opCodes.put("LDX", "100001");
         this.opCodes.put("STX", "100010");
+        this.opCodes.put("JZ", "001000");
     }
 
     public void readFile(String filename) {
@@ -103,16 +104,7 @@ public class Assembler {
                 continue;
             }
             //split each line into two columns
-            String[] arr = line.split(" ");
-            String[] comment_arr = line.split(";"); //comment is at index 1 if comma is present in a line
-            String comment = null;
-            
-            if (comment_arr.length>1){
-                comment = comment_arr[1];
-            }else{
-                comment = "";
-            }
-        
+            String[] arr = line.split(" ");    
             String leftColumn = arr[0];
             String rightColumn = arr[1];
             String outputLine = "";
@@ -138,9 +130,18 @@ public class Assembler {
                 this.writeToFile(outputLine, this.loadFilename);
                 String listOutputline = outputLine + "   " + line;
                 this.writeToFile(listOutputline, this.listFilename);
-            }else if(leftColumn.equals("LDR") || leftColumn.equals("STR") || leftColumn.equals("LDA") || leftColumn.equals("LDX") || leftColumn.equals("STX")){
+            }else if(leftColumn.equals("LDR") || leftColumn.equals("STR") || leftColumn.equals("LDA") || leftColumn.equals("LDX")
+             || leftColumn.equals("STX")){
                 //Load/Store
                 outputLine = this.convertToOctal(address) + "   " + this.loadStore(leftColumn, rightColumn);
+                this.writeToFile(outputLine, this.loadFilename);
+                String listOutputline = outputLine + "   " + line;
+                this.writeToFile(listOutputline, this.listFilename);
+                address++;
+            }else if(leftColumn.equals("JZ") || leftColumn.equals("JNE") || leftColumn.equals("JCC") || leftColumn.equals("JMA")
+             || leftColumn.equals("JSR") || leftColumn.equals("RFS") || leftColumn.equals("SOB") || leftColumn.equals("JGE")){
+                //Transfer
+                outputLine = this.convertToOctal(address) + "   " + this.transfer(leftColumn, rightColumn);
                 this.writeToFile(outputLine, this.loadFilename);
                 String listOutputline = outputLine + "   " + line;
                 this.writeToFile(listOutputline, this.listFilename);
@@ -154,12 +155,14 @@ public class Assembler {
         }
     }
 
-    //converts a Load/Store instruction into its binary format
+    //converts a Load/Store instruction into its octal string format
     //OpCodes: 01:LDR, 02:STR, 03:LDA, 41:LDX, 42:STX
     public String loadStore(String leftColumn, String rightColumn){
         String[] operands = rightColumn.split(",");
         String indirect = "";
-        if(operands.length == 4 && operands[operands.length-1] == "1"){ //indirect bit set
+        if((leftColumn.equals("LDR") || leftColumn.equals("STR") || leftColumn.equals("LDA")) && operands.length == 4 && operands[operands.length-1] == "1"){ //indirect bit set
+            indirect = "1";
+        }else if((leftColumn.equals("LDX") || leftColumn.equals("STX")) && operands.length == 3 && operands[operands.length-1] == "1"){
             indirect = "1";
         }else{
             indirect = "0";
@@ -183,16 +186,48 @@ public class Assembler {
         return this.convertToOctal(instruction);
     }
 
-    //converts a Transfer instruction into its binary format
+    //converts a Transfer instruction into its octal string format
     //OpCodes: 10:JZ, 11:JNE, 12:JCC, 13:JMA, 14:JSR, 15:RFS, 16:SOB, 17:JGE.
-    public String transfer(String instruction){
-        
-
-
-        return "";
+    public String transfer(String leftColumn, String rightColumn){
+        if(leftColumn.equals("RFS")){
+            return this.rfs(leftColumn, rightColumn);
+        }
+        String[] operands = rightColumn.split(",");
+        String indirect = "";
+        if((leftColumn.equals("JZ") || leftColumn.equals("JNE") || leftColumn.equals("JCC") || leftColumn.equals("SOB") || leftColumn.equals("JGE")) && operands.length == 4 && operands[operands.length-1] == "1"){ //indirect bit set
+            indirect = "1";
+        }else if((leftColumn.equals("JMA") || leftColumn.equals("JSR")) && operands.length == 3 && operands[operands.length-1] == "1"){
+            indirect = "1";
+        }else{
+            indirect = "0";
+        }
+        String gpr = "0"; //general purpose register
+        String ix = "0"; //index register
+        String address = ""; 
+        if(leftColumn.equals("JZ") || leftColumn.equals("JNE") || leftColumn.equals("JCC") || leftColumn.equals("SOB") || leftColumn.equals("JGE")){
+            gpr = operands[0];
+            ix = operands[1];
+            address = operands[2];
+        }else{ //JMA, JSR
+            ix = operands[0];
+            address = operands[1];
+        }
+        String opCode = this.opCodes.get(leftColumn);
+        gpr = this.convertToBinaryString(gpr, 2);
+        ix = this.convertToBinaryString(ix, 2);
+        address = this.convertToBinaryString(address, 5);
+        String instruction = opCode + gpr + ix + indirect + address;
+        return this.convertToOctal(instruction);
     }
 
-
+    //helper function to handle special case for RFS opCode: 15
+    private String rfs(String leftColumn, String rightColumn){
+        String opCode = this.opCodes.get(leftColumn);
+        //right column should have only immed address 
+        String address = this.convertToBinaryString(rightColumn, 5);  
+        String instruction = opCode + "00" + "00" + "0" + address;
+        return this.convertToOctal(instruction);
+    }
    
     private boolean writeToFile(String line, String filename){
         //helper function for writing to load and list files
