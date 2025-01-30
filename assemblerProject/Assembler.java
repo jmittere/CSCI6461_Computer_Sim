@@ -245,12 +245,6 @@ public class Assembler {
         }
     }
 
-    private String convertToOctal(String binaryNum){
-        //converts a binary string to an octal string
-        int decimalNum = Integer.parseInt(binaryNum, 2);
-        return this.convertToOctal(decimalNum);
-    }
-
     private String convertToBinaryString(String num, int len){
         //converts an String num to a binary string with a specified number of characters len
         //ensures that the number of characters is equal to len
@@ -268,5 +262,10 @@ public class Assembler {
         }
     }
 
+    private String convertToOctal(String binaryNum){
+        //converts a binary string to an octal string
+        int decimalNum = Integer.parseInt(binaryNum, 2);
+        return this.convertToOctal(decimalNum);
+    }
 
 }
