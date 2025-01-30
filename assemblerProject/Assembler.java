@@ -1,5 +1,6 @@
 package assemblerProject;
-import java.io.PrintWriter;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,6 +27,10 @@ public class Assembler {
 
     private void initializeOpcodes(){
         this.opCodes.put("LDR", "000001");
+        this.opCodes.put("STR", "000010");
+        this.opCodes.put("LDA", "000011");
+        this.opCodes.put("LDX", "100001");
+        this.opCodes.put("STX", "100010");
     }
 
     public void readFile(String filename) {
@@ -55,18 +60,21 @@ public class Assembler {
         while (scanner.hasNextLine()) {
             // Read and process each line
             String line = scanner.nextLine();
+            if(line.equals("")){ //empty line
+                continue;
+            }
             //split each line into two columns
             String[] arr = line.split(" ");
-            String left_column = arr[0];
-            String right_column = arr[1];
-            if(left_column.equals("LOC")){ 
-                System.out.println("Address change to :" + right_column);
+            String leftColumn = arr[0];
+            String rightColumn = arr[1];
+            if(leftColumn.equals("LOC")){ 
+                System.out.println("Address change to :" + rightColumn);
                 //setting location/address
-                address = Integer.valueOf(right_column);
+                address = Integer.parseInt(rightColumn);
                 //LOC does not increment address
-            }else if(left_column.endsWith(":") && true){ //TODO: true is placeholder: also add a check that left column is not a Key in the opCodes hashmap
+            }else if(leftColumn.endsWith(":") && true){ //TODO: true is placeholder: also add a check that left column is not a Key in the opCodes hashmap
                 //its a label, so current value of that label is current address
-                String temp_label = left_column.substring(0, left_column.length() - 1); //remove colon from label
+                String temp_label = leftColumn.substring(0, leftColumn.length() - 1); //remove colon from label
                 labels.put(temp_label, address);
                 address++;
             }else{
@@ -91,50 +99,130 @@ public class Assembler {
         while (scanner.hasNextLine()) {
             // Read and process each line
             String line = scanner.nextLine();
+            if(line.equals("")){ //empty line
+                continue;
+            }
             //split each line into two columns
             String[] arr = line.split(" ");
             String[] comment_arr = line.split(";"); //comment is at index 1 if comma is present in a line
-            boolean comment_present = false; 
-            if (line.contains(";")){
-                comment_present = true;
-            }
+            String comment = null;
             
-            String left_column = arr[0];
-            String right_column = arr[1];
-            String outputLine = "";
-            if(left_column.equals("LOC")){ 
-                //setting location/address
-                address = Integer.valueOf(right_column);
-                //LOC does not increment address
-                outputLine = "          " + line; //adds tab characters for blank left and right column
-                this.writeToFile(outputLine, this.listFilename);
-            }else if(left_column.equals("Data")){
-                //TODO
-                address++;
-
+            if (comment_arr.length>1){
+                comment = comment_arr[1];
             }else{
-                //TODO
-                System.out.println();
+                comment = "";
+            }
+        
+            String leftColumn = arr[0];
+            String rightColumn = arr[1];
+            String outputLine = "";
+            if(leftColumn.equals("LOC")){ 
+                //setting location/address
+                address = Integer.parseInt(rightColumn);
+                //LOC does not increment address
+                outputLine = "                  " + line; //adds tab characters for blank left and right column
+                this.writeToFile(outputLine, this.listFilename);
+            }else if(leftColumn.equals("Data")){
+                if(this.labels.containsKey(rightColumn)){
+                    outputLine = this.convertToOctal(address) + "   " + this.convertToOctal(this.labels.get(rightColumn));
+                }else{    
+                    outputLine = this.convertToOctal(address) + "   " + this.convertToOctal(Integer.parseInt(rightColumn));
+                }
+                this.writeToFile(outputLine, this.loadFilename);
+                String listOutputline = outputLine + "   " + line;
+                this.writeToFile(listOutputline, this.listFilename);
+                address++;
+            }else if(rightColumn.equals("HLT")){
+                //stop the program
+                outputLine = this.convertToOctal(address) + "   " + "000000";
+                this.writeToFile(outputLine, this.loadFilename);
+                String listOutputline = outputLine + "   " + line;
+                this.writeToFile(listOutputline, this.listFilename);
+            }else if(leftColumn.equals("LDR") || leftColumn.equals("STR") || leftColumn.equals("LDA") || leftColumn.equals("LDX") || leftColumn.equals("STX")){
+                //Load/Store
+                outputLine = this.convertToOctal(address) + "   " + this.loadStore(leftColumn, rightColumn);
+                this.writeToFile(outputLine, this.loadFilename);
+                String listOutputline = outputLine + "   " + line;
+                this.writeToFile(listOutputline, this.listFilename);
+                address++;
+            }else{
+                outputLine = line;
+                this.writeToFile(outputLine, this.loadFilename);
+                this.writeToFile(outputLine, this.listFilename);
+                address++;
             }
         }
     }
 
+    //converts a Load/Store instruction into its binary format
+    //OpCodes: 01:LDR, 02:STR, 03:LDA, 41:LDX, 42:STX
+    public String loadStore(String leftColumn, String rightColumn){
+        String[] operands = rightColumn.split(",");
+        String indirect = "";
+        if(operands.length == 4 && operands[operands.length-1] == "1"){ //indirect bit set
+            indirect = "1";
+        }else{
+            indirect = "0";
+        }
+        String gpr = "0"; //general purpose register
+        String ix = "0"; //index register
+        String address = ""; 
+        if(leftColumn.equals("LDR") || leftColumn.equals("STR") || leftColumn.equals("LDA")){
+            gpr = operands[0];
+            ix = operands[1];
+            address = operands[2];
+        }else{ //LDX, STX
+            ix = operands[0];
+            address = operands[1];
+        }
+        String opCode = this.opCodes.get(leftColumn);
+        gpr = this.convertToBinaryString(gpr, 2);
+        ix = this.convertToBinaryString(ix, 2);
+        address = this.convertToBinaryString(address, 5);
+        String instruction = opCode + gpr + ix + indirect + address;
+        return this.convertToOctal(instruction);
+    }
+
+    //converts a Transfer instruction into its binary format
+    //OpCodes: 10:JZ, 11:JNE, 12:JCC, 13:JMA, 14:JSR, 15:RFS, 16:SOB, 17:JGE.
+    public String transfer(String instruction){
+        
+
+
+        return "";
+    }
+
+
+   
     private boolean writeToFile(String line, String filename){
         //helper function for writing to load and list files
-        PrintWriter writer = null;
+        BufferedWriter writer = null;
         try {
-            writer = new PrintWriter(filename); 
+            writer = new BufferedWriter(new FileWriter(filename, true)); 
+            writer.write(line);
+            writer.newLine();
+            writer.close();
+            return true;
         } catch (IOException e) {
             System.out.println("An error occurred while writing to the file.");
             e.printStackTrace();
             return false;
         }
-            writer.println(line);
-            writer.close();
-            return true;
     }
 
-    public String convertToOctal(int decimal) {
+    private String convertToOctal(String binaryNum){
+        //converts a binary string to an octal string
+        int decimalNum = Integer.parseInt(binaryNum, 2);
+        return this.convertToOctal(decimalNum);
+    }
+
+    private String convertToBinaryString(String num, int len){
+        //converts an String num to a binary string with a specified number of characters len
+        //ensures that the number of characters is equal to len
+        return String.format("%" + len +"s", Integer.toBinaryString(Integer.parseInt(num))).replace(' ', '0');
+    }
+
+    private String convertToOctal(int decimal) {
         //converts a decimal number to octal - base 8
         String octalNum = Integer.toOctalString(decimal);
         int octalLength = octalNum.length();
