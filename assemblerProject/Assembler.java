@@ -62,7 +62,7 @@ public class Assembler {
     this.opCodes.put("CNVRT", "011111");
     this.opCodes.put("LDFR", "101000");
     this.opCodes.put("STFR", "101001");
-}
+    }
 
 
     public void readFile(String filename) {
