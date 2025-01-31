@@ -178,6 +178,21 @@ public class Assembler {
                 String listOutputline = outputLine + "   " + line;
                 this.writeToFile(listOutputline, this.listFilename);
                 address++;
+             }else if (leftColumn.equals("AMR") || leftColumn.equals("SMR") || leftColumn.equals("AIR") || leftColumn.equals("SIR")){
+                //Arithmetic and Logic 
+                outputLine = this.convertToOctal(address) + "   " + this.arithmeticLogical(leftColumn, rightColumn);
+                this.writeToFile(outputLine, this.loadFilename);
+                String listOutputline = outputLine + "   " + line;
+                this.writeToFile(listOutputline, this.listFilename);
+                address++;
+            }else if (leftColumn.equals("MLT") || leftColumn.equals("DVD") || leftColumn.equals("TRR") || leftColumn.equals("AND") 
+             || leftColumn.equals("ORR") || leftColumn.equals("NOT")){
+                //Multiply, Divide and other Logical Operations
+                outputLine = this.convertToOctal(address) + "   " + this.multiplyDivideLogical(leftColumn, rightColumn);
+                this.writeToFile(outputLine, this.loadFilename);
+                String listOutputline = outputLine + "   " + line;
+                this.writeToFile(listOutputline, this.listFilename);
+                address++;
             }else{
                 outputLine = line;
                 this.writeToFile(outputLine, this.loadFilename);
@@ -201,7 +216,7 @@ public class Assembler {
         }
         String gpr = "0"; //general purpose register
         String ix = "0"; //index register
-        String address = ""; 
+        String address = "0"; 
         if(leftColumn.equals("LDR") || leftColumn.equals("STR") || leftColumn.equals("LDA")){
             gpr = operands[0];
             ix = operands[1];
@@ -235,7 +250,7 @@ public class Assembler {
         }
         String gpr = "0"; //general purpose register
         String ix = "0"; //index register
-        String address = ""; 
+        String address = "0"; 
         if(leftColumn.equals("JZ") || leftColumn.equals("JNE") || leftColumn.equals("JCC") || leftColumn.equals("SOB") || leftColumn.equals("JGE")){
             gpr = operands[0];
             ix = operands[1];
@@ -261,6 +276,8 @@ public class Assembler {
         return this.convertToOctal(instruction);
     }
 
+    //converts a Arithmetic instruction into its octal string format
+    //OpCodes: 04:AMR, 05:SMR, 06:AIR, 07:SIR
     public String arithmeticLogical(String leftColumn, String rightColumn){
         String[] operands = rightColumn.split(",");
         String indirect = "";
@@ -271,7 +288,7 @@ public class Assembler {
         }
         String gpr = "0"; //general purpose register
         String ix = "0"; //index register
-        String address = ""; 
+        String address = "0"; 
         if(leftColumn.equals("AMR") || leftColumn.equals("SMR")){
             gpr = operands[0];
             ix = operands[1];
@@ -285,6 +302,28 @@ public class Assembler {
         ix = this.convertToBinaryString(ix, 2);
         address = this.convertToBinaryString(address, 5);
         String instruction = opCode + gpr + ix + indirect + address;
+        return this.convertToOctal(instruction);
+    }
+
+    //converts a multiply, divide or other logical instruction into its octal string format
+    //OpCodes: 70:MLT, 71:DVD, 72:TRR, 73:AND, 74:ORR, 75:NOT
+    public String multiplyDivideLogical(String leftColumn, String rightColumn){
+        String[] operands = rightColumn.split(",");
+        String indirect = "0";
+        String gprX = "0"; //general purpose register
+        String gprY = "0"; //index register
+        String address = "0"; 
+        if(!leftColumn.equals("NOT")){ //MLT, DVD, TRR, AND, ORR
+            gprX = operands[0];
+            gprY = operands[1];
+        }else{ //NOT
+            gprX = operands[0];
+        }
+        String opCode = this.opCodes.get(leftColumn);
+        gprX = this.convertToBinaryString(gprX, 2);
+        gprY = this.convertToBinaryString(gprY, 2);
+        address = this.convertToBinaryString(address, 5);
+        String instruction = opCode + gprX + gprY + indirect + address;
         return this.convertToOctal(instruction);
     }
    
@@ -326,5 +365,5 @@ public class Assembler {
         int decimalNum = Integer.parseInt(binaryNum, 2);
         return this.convertToOctal(decimalNum);
     }
-    
+
 }
