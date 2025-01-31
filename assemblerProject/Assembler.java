@@ -51,8 +51,8 @@ public class Assembler {
     this.opCodes.put("AND", "111011");
     this.opCodes.put("ORR", "111100");
     this.opCodes.put("NOT", "111101");
-    this.opCodes.put("SRC", "110001");
-    this.opCodes.put("RRC", "110010");
+    this.opCodes.put("SRC", "011001");
+    this.opCodes.put("RRC", "011010");
     this.opCodes.put("IN", "110001");
     this.opCodes.put("OUT", "110010");
     this.opCodes.put("CHK", "110011");
@@ -178,17 +178,25 @@ public class Assembler {
                 String listOutputline = outputLine + "   " + line;
                 this.writeToFile(listOutputline, this.listFilename);
                 address++;
-             }else if (leftColumn.equals("AMR") || leftColumn.equals("SMR") || leftColumn.equals("AIR") || leftColumn.equals("SIR")){
+            }else if(leftColumn.equals("AMR") || leftColumn.equals("SMR") || leftColumn.equals("AIR") || leftColumn.equals("SIR")){
                 //Arithmetic and Logic 
                 outputLine = this.convertToOctal(address) + "   " + this.arithmeticLogical(leftColumn, rightColumn);
                 this.writeToFile(outputLine, this.loadFilename);
                 String listOutputline = outputLine + "   " + line;
                 this.writeToFile(listOutputline, this.listFilename);
                 address++;
-            }else if (leftColumn.equals("MLT") || leftColumn.equals("DVD") || leftColumn.equals("TRR") || leftColumn.equals("AND") 
+            }else if(leftColumn.equals("MLT") || leftColumn.equals("DVD") || leftColumn.equals("TRR") || leftColumn.equals("AND") 
              || leftColumn.equals("ORR") || leftColumn.equals("NOT")){
                 //Multiply, Divide and other Logical Operations
                 outputLine = this.convertToOctal(address) + "   " + this.multiplyDivideLogical(leftColumn, rightColumn);
+                this.writeToFile(outputLine, this.loadFilename);
+                String listOutputline = outputLine + "   " + line;
+                this.writeToFile(listOutputline, this.listFilename);
+                address++;
+
+            }else if(leftColumn.equals("SRC") || leftColumn.equals("RRC")){
+                //Shift and Rotate
+                outputLine = this.convertToOctal(address) + "   " + this.shiftRotateOperations(leftColumn, rightColumn);
                 this.writeToFile(outputLine, this.loadFilename);
                 String listOutputline = outputLine + "   " + line;
                 this.writeToFile(listOutputline, this.listFilename);
@@ -310,8 +318,8 @@ public class Assembler {
     public String multiplyDivideLogical(String leftColumn, String rightColumn){
         String[] operands = rightColumn.split(",");
         String indirect = "0";
-        String gprX = "0"; //general purpose register
-        String gprY = "0"; //index register
+        String gprX = "0"; //general purpose register X
+        String gprY = "0"; //general purpose register Y
         String address = "0"; 
         if(!leftColumn.equals("NOT")){ //MLT, DVD, TRR, AND, ORR
             gprX = operands[0];
@@ -322,10 +330,28 @@ public class Assembler {
         String opCode = this.opCodes.get(leftColumn);
         gprX = this.convertToBinaryString(gprX, 2);
         gprY = this.convertToBinaryString(gprY, 2);
-        address = this.convertToBinaryString(address, 5);
+        address = this.convertToBinaryString(address, 6);
         String instruction = opCode + gprX + gprY + indirect + address;
         return this.convertToOctal(instruction);
     }
+
+    //converts a shift or rotate instruction into its octal string format
+    //OpCodes: 31:SRC, 32:RRC
+    public String shiftRotateOperations(String leftColumn, String rightColumn){
+        String[] operands = rightColumn.split(",");
+        String gpr = operands[0]; //general purpose register
+        String count = operands[1]; //number of bits to shift/rotate
+        String lR = operands[2]; //Logical Shift/Rotate
+        String aL = operands[3]; //Arithmetic Shift
+        String emptybits = "00"; 
+        
+        String opCode = this.opCodes.get(leftColumn);
+        gpr = this.convertToBinaryString(gpr, 2);
+        count = this.convertToBinaryString(count, 4);
+        String instruction = opCode + gpr + aL + lR + emptybits + count;
+        return this.convertToOctal(instruction);
+    }
+   
    
     private boolean writeToFile(String line, String filename){
         //helper function for writing to load and list files
