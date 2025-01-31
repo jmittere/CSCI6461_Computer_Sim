@@ -24,7 +24,7 @@ public class Assembler {
         this.opCodes = new HashMap<>();
         this.initializeOpcodes();
     }
-//Initializong the binary value with corresponding labels
+    //Initializing the binary value with corresponding labels
     private void initializeOpcodes(){
     this.opCodes.put("LDR", "000001");
     this.opCodes.put("TRAP", "110000");
