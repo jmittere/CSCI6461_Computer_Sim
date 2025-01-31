@@ -98,7 +98,10 @@ public class Assembler {
             //split each line into two columns
             String[] arr = line.split(" ");
             String leftColumn = arr[0];
-            String rightColumn = arr[1];
+            String rightColumn = "";
+            if(arr.length>1){
+                rightColumn = arr[1];
+            }
             if(leftColumn.equals("LOC")){ 
                 System.out.println("Address change to :" + rightColumn);
                 //setting location/address
@@ -137,7 +140,10 @@ public class Assembler {
             //split each line into two columns
             String[] arr = line.split(" ");    
             String leftColumn = arr[0];
-            String rightColumn = arr[1];
+            String rightColumn = "";
+            if(arr.length>1){
+                rightColumn = arr[1];
+            }
             String outputLine = "";
             if(leftColumn.equals("LOC")){ 
                 //setting location/address
