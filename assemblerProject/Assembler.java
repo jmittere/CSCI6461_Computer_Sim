@@ -260,6 +260,33 @@ public class Assembler {
         String instruction = opCode + "00" + "00" + "0" + address;
         return this.convertToOctal(instruction);
     }
+
+    public String arithmeticLogical(String leftColumn, String rightColumn){
+        String[] operands = rightColumn.split(",");
+        String indirect = "";
+        if((leftColumn.equals("AMR") || leftColumn.equals("SMR")) && operands.length == 4 && operands[operands.length-1] == "1"){ //indirect bit set){ //indirect bit set
+            indirect = "1";
+        }else{
+            indirect = "0";
+        }
+        String gpr = "0"; //general purpose register
+        String ix = "0"; //index register
+        String address = ""; 
+        if(leftColumn.equals("AMR") || leftColumn.equals("SMR")){
+            gpr = operands[0];
+            ix = operands[1];
+            address = operands[2];
+        }else{ //AIR, SIR
+            ix = operands[0];
+            address = operands[1];
+        }
+        String opCode = this.opCodes.get(leftColumn);
+        gpr = this.convertToBinaryString(gpr, 2);
+        ix = this.convertToBinaryString(ix, 2);
+        address = this.convertToBinaryString(address, 5);
+        String instruction = opCode + gpr + ix + indirect + address;
+        return this.convertToOctal(instruction);
+    }
    
     private boolean writeToFile(String line, String filename){
         //helper function for writing to load and list files
@@ -278,7 +305,7 @@ public class Assembler {
     }
 
     private String convertToBinaryString(String num, int len){
-        //converts an String num to a binary string with a specified number of characters len
+        //converts an String num in decimal to a binary string with a specified number of characters len
         //ensures that the number of characters is equal to len
         return String.format("%" + len +"s", Integer.toBinaryString(Integer.parseInt(num))).replace(' ', '0');
     }
@@ -299,5 +326,5 @@ public class Assembler {
         int decimalNum = Integer.parseInt(binaryNum, 2);
         return this.convertToOctal(decimalNum);
     }
-
+    
 }
