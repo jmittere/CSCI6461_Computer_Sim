@@ -17,6 +17,7 @@
 3. **Run the Assember:**
    - Within the SourceFiles/ folder, there are presupplied source files.
    - Any additional source files in this folder will be translated to their listing and load files, respectively.
+   - They will have the same filename as the source file except the suffixes _listing.txt and _load.txt will be added. 
    - To run the assembler:
      ```bash
      java Main
