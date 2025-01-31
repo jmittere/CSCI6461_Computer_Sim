@@ -27,7 +27,7 @@ public class Assembler {
     //Initializing the binary value with corresponding labels
     private void initializeOpcodes(){
     this.opCodes.put("LDR", "000001");
-    this.opCodes.put("TRAP", "110000");
+    this.opCodes.put("TRAP", "011000");
     this.opCodes.put("STR", "000010");
     this.opCodes.put("LDA", "000011");
     this.opCodes.put("LDX", "100001");
@@ -161,6 +161,13 @@ public class Assembler {
                 this.writeToFile(outputLine, this.loadFilename);
                 String listOutputline = outputLine + "   " + line;
                 this.writeToFile(listOutputline, this.listFilename);
+            }else if(leftColumn.equals("TRAP")){
+                //TRAP instruction
+                outputLine = this.convertToOctal(address) + "   " + this.trap(leftColumn, rightColumn);
+                this.writeToFile(outputLine, this.loadFilename);
+                String listOutputline = outputLine + "   " + line;
+                this.writeToFile(listOutputline, this.listFilename);
+                address++;
             }else if(leftColumn.equals("LDR") || leftColumn.equals("STR") || leftColumn.equals("LDA") || leftColumn.equals("LDX")
              || leftColumn.equals("STX")){
                 //Load/Store
@@ -192,10 +199,17 @@ public class Assembler {
                 String listOutputline = outputLine + "   " + line;
                 this.writeToFile(listOutputline, this.listFilename);
                 address++;
-
             }else if(leftColumn.equals("SRC") || leftColumn.equals("RRC")){
                 //Shift and Rotate
                 outputLine = this.convertToOctal(address) + "   " + this.shiftRotateOperations(leftColumn, rightColumn);
+                this.writeToFile(outputLine, this.loadFilename);
+                String listOutputline = outputLine + "   " + line;
+                this.writeToFile(listOutputline, this.listFilename);
+                address++;
+            }else if(leftColumn.equals("FADD") || leftColumn.equals("FSUB") || leftColumn.equals("VADD") || leftColumn.equals("VSUB") 
+             || leftColumn.equals("CNVRT") || leftColumn.equals("LDFR") || leftColumn.equals("STFR")){
+                //Floating Point Instruction and Vector Operation
+                outputLine = this.convertToOctal(address) + "   " + this.floatingPointVector(leftColumn, rightColumn);
                 this.writeToFile(outputLine, this.loadFilename);
                 String listOutputline = outputLine + "   " + line;
                 this.writeToFile(listOutputline, this.listFilename);
@@ -342,15 +356,43 @@ public class Assembler {
         String count = operands[1]; //number of bits to shift/rotate
         String lR = operands[2]; //Logical Shift/Rotate
         String aL = operands[3]; //Arithmetic Shift
-        String emptybits = "00"; 
-        
+        String emptybits = "00";   
         String opCode = this.opCodes.get(leftColumn);
         gpr = this.convertToBinaryString(gpr, 2);
         count = this.convertToBinaryString(count, 4);
         String instruction = opCode + gpr + aL + lR + emptybits + count;
         return this.convertToOctal(instruction);
     }
-   
+
+     //converts a floating point instruction or vector operation into its octal string format
+    //OpCodes: 33:FADD, 34:FSUB, 35:VADD, 36:VSUB, 37:CNVRT, 50:LDFR, 51:STFR 
+    public String floatingPointVector(String leftColumn, String rightColumn){
+        String[] operands = rightColumn.split(",");
+        String indirect = "";
+        if(operands.length == 4 && operands[operands.length-1] == "1"){ //indirect bit set
+            indirect = "1";
+        }else{
+            indirect = "0";
+        }
+        String fpr = operands[0]; //floating point register
+        String ix = operands[1]; //index register 
+        String address = operands[2]; 
+        String opCode = this.opCodes.get(leftColumn);
+        fpr = this.convertToBinaryString(fpr, 2);
+        ix = this.convertToBinaryString(ix, 2);
+        address = this.convertToBinaryString(address, 5);
+        String instruction = opCode + fpr + ix + indirect + address;
+        return this.convertToOctal(instruction);
+    }
+    //converts a trap into its octal string format
+    //OpCodes: 30:TRAP 
+    public String trap(String leftColumn, String rightColumn){
+        String emptyBits = "000000";
+        String trapCode = this.convertToBinaryString(rightColumn, 4);
+        String opCode = this.opCodes.get(leftColumn);
+        String instruction = opCode + emptyBits + trapCode;
+        return this.convertToOctal(instruction);
+    }
    
     private boolean writeToFile(String line, String filename){
         //helper function for writing to load and list files
