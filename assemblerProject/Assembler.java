@@ -27,20 +27,19 @@ public class Assembler {
 //Initializong the binary value with corresponding labels
     private void initializeOpcodes(){
     this.opCodes.put("LDR", "000001");
-    this.opCodes.put("HLT", "000000");
     this.opCodes.put("TRAP", "110000");
     this.opCodes.put("STR", "000010");
     this.opCodes.put("LDA", "000011");
     this.opCodes.put("LDX", "100001");
     this.opCodes.put("STX", "100010");
-    this.opCodes.put("JZ", "010000");
-    this.opCodes.put("JNE", "010001");
-    this.opCodes.put("JCC", "010010");
-    this.opCodes.put("JMA", "010011");
-    this.opCodes.put("JSR", "010100");
-    this.opCodes.put("RFS", "010101");
-    this.opCodes.put("SOB", "010110");
-    this.opCodes.put("JGE", "010111");
+    this.opCodes.put("JZ", "001000");
+    this.opCodes.put("JNE", "001001");
+    this.opCodes.put("JCC", "001010");
+    this.opCodes.put("JMA", "001011");
+    this.opCodes.put("JSR", "001100");
+    this.opCodes.put("RFS", "001101");
+    this.opCodes.put("SOB", "001110");
+    this.opCodes.put("JGE", "001111");
     this.opCodes.put("AMR", "000100");
     this.opCodes.put("SMR", "000101");
     this.opCodes.put("AIR", "000110");
@@ -56,11 +55,11 @@ public class Assembler {
     this.opCodes.put("IN", "110001");
     this.opCodes.put("OUT", "110010");
     this.opCodes.put("CHK", "110011");
-    this.opCodes.put("FADD", "110011");
-    this.opCodes.put("FSUB", "110100");
-    this.opCodes.put("VADD", "110101");
-    this.opCodes.put("VSUB", "110110");
-    this.opCodes.put("CNVRT", "110111");
+    this.opCodes.put("FADD", "011011");
+    this.opCodes.put("FSUB", "011100");
+    this.opCodes.put("VADD", "011101");
+    this.opCodes.put("VSUB", "011110");
+    this.opCodes.put("CNVRT", "011111");
     this.opCodes.put("LDFR", "101000");
     this.opCodes.put("STFR", "101001");
 }
