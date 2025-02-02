@@ -220,7 +220,16 @@ public class Assembler {
                 String listOutputline = outputLine + "   " + line;
                 this.writeToFile(listOutputline, this.listFilename);
                 address++;
-            }else{
+            }
+            else if(leftColumn.equals("IN") || leftColumn.equals("OUT") || leftColumn.equals("CHK")){
+                //Input Output Operations
+                outputLine = this.convertToOctal(address) + "   " + this.ioOperations(leftColumn, rightColumn);
+                this.writeToFile(outputLine, this.loadFilename);
+                String listOutputline = outputLine + "   " + line;
+                this.writeToFile(listOutputline, this.listFilename);
+                address++;
+            }
+            else{
                 outputLine = line;
                 this.writeToFile(outputLine, this.loadFilename);
                 this.writeToFile(outputLine, this.listFilename);
@@ -399,7 +408,20 @@ public class Assembler {
         String instruction = opCode + emptyBits + trapCode;
         return this.convertToOctal(instruction);
     }
-   
+     //converts a i/o operations into its octal string format
+    //OpCodes: 61:IN, 62: out, 63:CHK
+    public String ioOperations(String leftColumn, String rightColumn){
+        String[] operands = rightColumn.split(",");
+        String r = operands[0]; //register
+        String deviceId = operands[1]; //devId
+        // String emptybits = "000000"; //Empty bits to fill the space cause device id is 2 bits   
+        String opCode = this.opCodes.get(leftColumn);
+        r = this.convertToBinaryString(r, 2);
+        deviceId = this.convertToBinaryString(deviceId, 8);
+        String instruction = opCode + r + deviceId;
+        return this.convertToOctal(instruction);
+    }
+
     private boolean writeToFile(String line, String filename){
         //helper function for writing to load and list files
         BufferedWriter writer = null;
