@@ -5,4 +5,4 @@ Data 9
 LDR 0,2,10,1    ;R0 GETS 18
 JZ 0,1,0   ;JUMP TO End IF R0 = 0
 LDX 1,8     ;X1 GETS 8
-LDX 2,8     ;X2 GETS 1024
+LDX 2,9     ;X2 GETS 9

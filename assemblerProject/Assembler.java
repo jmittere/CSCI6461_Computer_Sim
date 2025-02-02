@@ -243,13 +243,18 @@ public class Assembler {
     public String loadStore(String leftColumn, String rightColumn){
         String[] operands = rightColumn.split(",");
         String indirect = "";
-        if((leftColumn.equals("LDR") || leftColumn.equals("STR") || leftColumn.equals("LDA")) && operands.length == 4 && operands[operands.length-1] == "1"){ //indirect bit set
+    
+        if((leftColumn.equals("LDR") || leftColumn.equals("STR") || leftColumn.equals("LDA")) && operands.length == 4 && operands[operands.length-1].equals("1")){ //indirect bit set
             indirect = "1";
-        }else if((leftColumn.equals("LDX") || leftColumn.equals("STX")) && operands.length == 3 && operands[operands.length-1] == "1"){
+        }else if((leftColumn.equals("LDX") || leftColumn.equals("STX")) && operands.length == 3 && operands[operands.length-1].equals("1")){
             indirect = "1";
         }else{
             indirect = "0";
         }
+        System.out.println("line: " + leftColumn + " "+ rightColumn);
+        System.out.println("indirectbit: " +indirect);
+        System.out.println("operands.length: " + operands.length);
+        System.out.println("operands[operands.length-1]: " + operands[operands.length-1]);
         String gpr = "0"; //general purpose register
         String ix = "0"; //index register
         String address = "0"; 
@@ -277,9 +282,9 @@ public class Assembler {
         }
         String[] operands = rightColumn.split(",");
         String indirect = "";
-        if((leftColumn.equals("JZ") || leftColumn.equals("JNE") || leftColumn.equals("JCC") || leftColumn.equals("SOB") || leftColumn.equals("JGE")) && operands.length == 4 && operands[operands.length-1] == "1"){ //indirect bit set
+        if((leftColumn.equals("JZ") || leftColumn.equals("JNE") || leftColumn.equals("JCC") || leftColumn.equals("SOB") || leftColumn.equals("JGE")) && operands.length == 4 && operands[operands.length-1].equals("1")){ //indirect bit set
             indirect = "1";
-        }else if((leftColumn.equals("JMA") || leftColumn.equals("JSR")) && operands.length == 3 && operands[operands.length-1] == "1"){
+        }else if((leftColumn.equals("JMA") || leftColumn.equals("JSR")) && operands.length == 3 && operands[operands.length-1].equals("1")){
             indirect = "1";
         }else{
             indirect = "0";
@@ -317,7 +322,7 @@ public class Assembler {
     public String arithmeticLogical(String leftColumn, String rightColumn){
         String[] operands = rightColumn.split(",");
         String indirect = "";
-        if((leftColumn.equals("AMR") || leftColumn.equals("SMR")) && operands.length == 4 && operands[operands.length-1] == "1"){ //indirect bit set){ //indirect bit set
+        if((leftColumn.equals("AMR") || leftColumn.equals("SMR")) && operands.length == 4 && operands[operands.length-1].equals("1")){ //indirect bit set){ //indirect bit set
             indirect = "1";
         }else{
             indirect = "0";
@@ -384,7 +389,7 @@ public class Assembler {
     public String floatingPointVector(String leftColumn, String rightColumn){
         String[] operands = rightColumn.split(",");
         String indirect = "";
-        if(operands.length == 4 && operands[operands.length-1] == "1"){ //indirect bit set
+        if(operands.length == 4 && operands[operands.length-1].equals("1")){ //indirect bit set
             indirect = "1";
         }else{
             indirect = "0";
