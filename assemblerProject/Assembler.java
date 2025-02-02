@@ -414,11 +414,11 @@ public class Assembler {
         String[] operands = rightColumn.split(",");
         String r = operands[0]; //register
         String deviceId = operands[1]; //devId
-        // String emptybits = "000000"; //Empty bits to fill the space cause device id is 2 bits   
+        String emptybits = "000"; //Empty bits to fill the space    
         String opCode = this.opCodes.get(leftColumn);
         r = this.convertToBinaryString(r, 2);
-        deviceId = this.convertToBinaryString(deviceId, 8);
-        String instruction = opCode + r + deviceId;
+        deviceId = this.convertToBinaryString(deviceId, 5);
+        String instruction = opCode + r + emptybits + deviceId;
         return this.convertToOctal(instruction);
     }
 
