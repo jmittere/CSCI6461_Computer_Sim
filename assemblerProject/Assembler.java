@@ -103,7 +103,7 @@ public class Assembler {
                 rightColumn = arr[1];
             }
             if(leftColumn.equals("LOC")){ 
-                System.out.println("Address change to :" + rightColumn);
+                //System.out.println("Address change to :" + rightColumn);
                 //setting location/address
                 address = Integer.parseInt(rightColumn);
                 //LOC does not increment address
@@ -116,9 +116,6 @@ public class Assembler {
                 address++;
             }
         }
-
-        //System.out.println("Mappings of labels Hashmap are: " + labels);
-        //System.out.println("Ending Address: " + address);
     }
 
     public void secondPass(){
@@ -161,7 +158,7 @@ public class Assembler {
                 String listOutputline = outputLine + "   " + line;
                 this.writeToFile(listOutputline, this.listFilename);
                 address++;
-            }else if(rightColumn.equals("HLT")){
+            }else if(rightColumn.equals("HLT") || (leftColumn.equals("HLT"))){
                 //stop the program
                 outputLine = this.convertToOctal(address) + "   " + "000000";
                 this.writeToFile(outputLine, this.loadFilename);
@@ -268,13 +265,6 @@ public class Assembler {
         ix = this.convertToBinaryString(ix, 2);
         address = this.convertToBinaryString(address, 5);
         String instruction = opCode + gpr + ix + indirect + address;
-        if (leftColumn.equals("STX")) {
-            System.out.println("line: " + leftColumn + " "+ rightColumn);
-            System.out.println("indirectbit: " +indirect);
-            System.out.println("operands.length: " + operands.length);
-            System.out.println("operands[operands.length-1]: " + operands[operands.length-1]);
-            
-            System.out.println(instruction);}
         return this.convertToOctal(instruction);
     }
 
@@ -354,7 +344,6 @@ public class Assembler {
     //OpCodes: 70:MLT, 71:DVD, 72:TRR, 73:AND, 74:ORR, 75:NOT
     public String multiplyDivideLogical(String leftColumn, String rightColumn){
         String[] operands = rightColumn.split(",");
-        String indirect = "0";
         String gprX = "0"; //general purpose register X
         String gprY = "0"; //general purpose register Y
         String address = "0"; 
@@ -368,7 +357,7 @@ public class Assembler {
         gprX = this.convertToBinaryString(gprX, 2);
         gprY = this.convertToBinaryString(gprY, 2);
         address = this.convertToBinaryString(address, 6);
-        String instruction = opCode + gprX + gprY + indirect + address;
+        String instruction = opCode + gprX + gprY + address;
         return this.convertToOctal(instruction);
     }
 
