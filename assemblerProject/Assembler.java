@@ -251,10 +251,7 @@ public class Assembler {
         }else{
             indirect = "0";
         }
-        System.out.println("line: " + leftColumn + " "+ rightColumn);
-        System.out.println("indirectbit: " +indirect);
-        System.out.println("operands.length: " + operands.length);
-        System.out.println("operands[operands.length-1]: " + operands[operands.length-1]);
+       
         String gpr = "0"; //general purpose register
         String ix = "0"; //index register
         String address = "0"; 
@@ -271,6 +268,13 @@ public class Assembler {
         ix = this.convertToBinaryString(ix, 2);
         address = this.convertToBinaryString(address, 5);
         String instruction = opCode + gpr + ix + indirect + address;
+        if (leftColumn.equals("STX")) {
+            System.out.println("line: " + leftColumn + " "+ rightColumn);
+            System.out.println("indirectbit: " +indirect);
+            System.out.println("operands.length: " + operands.length);
+            System.out.println("operands[operands.length-1]: " + operands[operands.length-1]);
+            
+            System.out.println(instruction);}
         return this.convertToOctal(instruction);
     }
 
@@ -335,7 +339,7 @@ public class Assembler {
             ix = operands[1];
             address = operands[2];
         }else{ //AIR, SIR
-            ix = operands[0];
+            gpr = operands[0];
             address = operands[1];
         }
         String opCode = this.opCodes.get(leftColumn);
