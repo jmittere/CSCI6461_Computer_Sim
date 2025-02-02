@@ -10,7 +10,7 @@
 
 3. **Run the Assember:**
    - Within the SourceFiles/ folder, there are presupplied source files.
-   - The listing files for the two test cases are already in the ExampleOutputFiles/ folder. These will also get created upon running the command below and put into the OutputFiles/ folder. 
+   - **The listing files for the two test cases are already in the ExampleOutputFiles/ folder. These will also get created upon running the command below and put into the OutputFiles/ folder**. 
    - Any additional source files in this folder will be translated to their listing and load files, respectively.
    - They will have the same filename as the source file except the suffixes _listing.txt and _load.txt will be added. 
    - To run the assembler:
