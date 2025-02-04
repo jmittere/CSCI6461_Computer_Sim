@@ -1,6 +1,6 @@
 # CSCI6461_Computer_Sim
 
-## Computer Simulator project for CSCI6461: Computer System Architecture
+## Computer Simulator project for CSCI6461: Computer System Architecture: Team 7
 
 ### How to Run with the Assembler.jar file
 
