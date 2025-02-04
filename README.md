@@ -44,7 +44,7 @@
      ```bash
      java Main
   
-    - This will generate the listing and load files in the OutputFiles/ folder.
-    - To remove the listing and load files from the OutputFiles/ folder, run the cleanup bash script:
+   - This will generate the listing and load files in the OutputFiles/ folder.
+   - To remove the listing and load files from the OutputFiles/ folder, run the cleanup bash script:
       ```bash
       ./cleanup.sh
