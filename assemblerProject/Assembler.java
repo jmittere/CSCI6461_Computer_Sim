@@ -27,7 +27,6 @@ public class Assembler {
     //Initializing the binary value with corresponding labels
     private void initializeOpcodes(){
         this.opCodes.put("LDR", "000001");  // 1
-        this.opCodes.put("HLT", "000000");  // 0
         this.opCodes.put("TRAP", "011110"); // 30
         this.opCodes.put("STR", "000010");  // 2
         this.opCodes.put("LDA", "000011");  // 3
