@@ -24,45 +24,45 @@ public class Assembler {
         this.opCodes = new HashMap<>();
         this.initializeOpcodes();
     }
-    //Initializing the binary value with corresponding labels
-    private void initializeOpcodes(){
-        this.opCodes.put("LDR", "000001");  // 1
-        this.opCodes.put("TRAP", "011110"); // 30
-        this.opCodes.put("STR", "000010");  // 2
-        this.opCodes.put("LDA", "000011");  // 3
-        this.opCodes.put("LDX", "100001");  // 41
-        this.opCodes.put("STX", "100010");  // 42
-        this.opCodes.put("JZ", "001000");   // 8
-        this.opCodes.put("JNE", "001001");  // 9
-        this.opCodes.put("JCC", "001010");  // 10
-        this.opCodes.put("JMA", "001011");  // 11
-        this.opCodes.put("JSR", "001100");  // 12
-        this.opCodes.put("RFS", "001101");  // 13
-        this.opCodes.put("SOB", "001110");  // 14
-        this.opCodes.put("JGE", "001111");  // 15
-        this.opCodes.put("AMR", "000100");  // 4
-        this.opCodes.put("SMR", "000101");  // 5
-        this.opCodes.put("AIR", "000110");  // 6
-        this.opCodes.put("SIR", "000111");  // 7
-        this.opCodes.put("MLT", "110010");  // 70
-        this.opCodes.put("DVD", "110011");  // 71
-        this.opCodes.put("TRR", "110100");  // 72
-        this.opCodes.put("AND", "110101");  // 73
-        this.opCodes.put("ORR", "110110");  // 74
-        this.opCodes.put("NOT", "110111");  // 75 
-        this.opCodes.put("SRC", "011111");  // 31
-        this.opCodes.put("RRC", "100000");  // 32
-        this.opCodes.put("IN", "111101");   // 61
-        this.opCodes.put("OUT", "111110");  // 62
-        this.opCodes.put("CHK", "111111");  // 63
-        this.opCodes.put("FADD", "100001"); // 33
-        this.opCodes.put("FSUB", "100010"); // 34
-        this.opCodes.put("VADD", "100011"); // 35
-        this.opCodes.put("VSUB", "100100"); // 36
-        this.opCodes.put("CNVRT", "100101");// 37
-        this.opCodes.put("LDFR", "110010"); // 50
-        this.opCodes.put("STFR", "110011"); // 51
-    }    
+     //Initializing the binary value with corresponding labels
+     private void initializeOpcodes(){
+        this.opCodes.put("LDR", "000001");
+        this.opCodes.put("TRAP", "011000");
+        this.opCodes.put("STR", "000010");
+        this.opCodes.put("LDA", "000011");
+        this.opCodes.put("LDX", "100001");
+        this.opCodes.put("STX", "100010");
+        this.opCodes.put("JZ", "001000");
+        this.opCodes.put("JNE", "001001");
+        this.opCodes.put("JCC", "001010");
+        this.opCodes.put("JMA", "001011");
+        this.opCodes.put("JSR", "001100");
+        this.opCodes.put("RFS", "001101");
+        this.opCodes.put("SOB", "001110");
+        this.opCodes.put("JGE", "001111");
+        this.opCodes.put("AMR", "000100");
+        this.opCodes.put("SMR", "000101");
+        this.opCodes.put("AIR", "000110");
+        this.opCodes.put("SIR", "000111");
+        this.opCodes.put("MLT", "111000");
+        this.opCodes.put("DVD", "111001");
+        this.opCodes.put("TRR", "111010");
+        this.opCodes.put("AND", "111011");
+        this.opCodes.put("ORR", "111100");
+        this.opCodes.put("NOT", "111101");
+        this.opCodes.put("SRC", "011001");
+        this.opCodes.put("RRC", "011010");
+        this.opCodes.put("IN", "110001");
+        this.opCodes.put("OUT", "110010");
+        this.opCodes.put("CHK", "110011");
+        this.opCodes.put("FADD", "011011");
+        this.opCodes.put("FSUB", "011100");
+        this.opCodes.put("VADD", "011101");
+        this.opCodes.put("VSUB", "011110");
+        this.opCodes.put("CNVRT", "011111");
+        this.opCodes.put("LDFR", "101000");
+        this.opCodes.put("STFR", "101001");
+        } 
 
 
     public void readFile(String filename) {
