@@ -260,6 +260,9 @@ public class Assembler {
             ix = operands[0];
             address = operands[1];
         }
+        if(Integer.parseInt(gpr) > 3 || Integer.parseInt(gpr) < 0 || Integer.parseInt(ix) > 3 || Integer.parseInt(ix) < 0){
+            return "Error: GPR and IX must be between 0 and 3";
+        }
         String opCode = this.opCodes.get(leftColumn);
         gpr = this.convertToBinaryString(gpr, 2);
         ix = this.convertToBinaryString(ix, 2);
@@ -293,6 +296,9 @@ public class Assembler {
         }else{ //JMA, JSR
             ix = operands[0];
             address = operands[1];
+        }
+        if(Integer.parseInt(gpr) > 3 || Integer.parseInt(gpr) < 0 || Integer.parseInt(ix) > 3 || Integer.parseInt(ix) < 0){
+            return "Error: GPR and IX must be between 0 and 3";
         }
         String opCode = this.opCodes.get(leftColumn);
         gpr = this.convertToBinaryString(gpr, 2);
@@ -332,6 +338,9 @@ public class Assembler {
             gpr = operands[0];
             address = operands[1];
         }
+        if(Integer.parseInt(gpr) > 3 || Integer.parseInt(gpr) < 0 || Integer.parseInt(ix) > 3 || Integer.parseInt(ix) < 0){
+            return "Error: GPR and IX must be between 0 and 3";
+        }
         String opCode = this.opCodes.get(leftColumn);
         gpr = this.convertToBinaryString(gpr, 2);
         ix = this.convertToBinaryString(ix, 2);
@@ -353,6 +362,9 @@ public class Assembler {
         }else{ //NOT
             gprX = operands[0];
         }
+        if(Integer.parseInt(gprX) > 3 || Integer.parseInt(gprX) < 0 || Integer.parseInt(gprY) > 3 || Integer.parseInt(gprY) < 0){
+            return "Error: GPR and IX must be between 0 and 3";
+        }
         String opCode = this.opCodes.get(leftColumn);
         gprX = this.convertToBinaryString(gprX, 2);
         gprY = this.convertToBinaryString(gprY, 2);
@@ -369,6 +381,9 @@ public class Assembler {
         String count = operands[1]; //number of bits to shift/rotate
         String lR = operands[2]; //Logical Shift/Rotate
         String aL = operands[3]; //Arithmetic Shift
+        if(Integer.parseInt(gpr) > 3 || Integer.parseInt(gpr) < 0 || Integer.parseInt(lR) > 1 || Integer.parseInt(aL) > 1 || Integer.parseInt(lR) < 0 || Integer.parseInt(aL) < 0){
+            return "Error: GPR, lR, or aL incorrect";
+        }
         String emptybits = "00";   
         String opCode = this.opCodes.get(leftColumn);
         gpr = this.convertToBinaryString(gpr, 2);
@@ -389,6 +404,9 @@ public class Assembler {
         }
         String fpr = operands[0]; //floating point register
         String ix = operands[1]; //index register 
+        if(Integer.parseInt(fpr) > 1 || Integer.parseInt(fpr) < 0 || Integer.parseInt(ix) > 3 || Integer.parseInt(ix) < 0){
+            return "Error: FPR and IX must be between 0 and 3";
+        }
         String address = operands[2]; 
         String opCode = this.opCodes.get(leftColumn);
         fpr = this.convertToBinaryString(fpr, 2);
@@ -412,6 +430,9 @@ public class Assembler {
         String[] operands = rightColumn.split(",");
         String r = operands[0]; //register
         String deviceId = operands[1]; //devId
+        if(Integer.parseInt(r) > 3 || Integer.parseInt(r) < 0){
+            return "Error: GPR must be between 0 and 3";
+        }
         String emptybits = "000"; //Empty bits to fill the space    
         String opCode = this.opCodes.get(leftColumn);
         r = this.convertToBinaryString(r, 2);
