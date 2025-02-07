@@ -1,7 +1,7 @@
 # CSCI6461_Computer_Sim
 
 ## Computer Simulator project for CSCI6461: Computer System Architecture: Team 7
-
+All information on how to use the project is included in the Readme.MD file for the repo at https://github.com/jmittere/CSCI6461_Computer_Sim .
 ### How to Run with the Assembler.jar file
 
 1. **Prerequisites:**
